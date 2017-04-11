@@ -3,15 +3,17 @@ package com.miramicodigo.sj_a_1_17_java_3_intents;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
     /**
      * @author Gustavo Lizarraga
      * @date 06-04-17
@@ -48,23 +50,123 @@ public class MainActivity extends AppCompatActivity {
         ibEnviarMail = (ImageButton) findViewById(R.id.ibEnviarEmail);
         ibAbrirApp = (ImageButton) findViewById(R.id.ibAbrirApp);
 
-
+        ibAbrirActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirActivity();
+            }
+        });
+        ibEnviarDatos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enviarDatos();
+            }
+        });
+        ibDevolverDatos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                devolverDatos();
+            }
+        });
+        ibAbrirMarcado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirMarcadoTelefonico();
+            }
+        });
+        ibLlamar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                llamar();
+            }
+        });
+        ibAbrirGoogleMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirGoogleMaps();
+            }
+        });
+        ibAbrirPaginaWeb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirPaginaWeb();
+            }
+        });
+        ibCompartirTexto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                compartirTexto();
+            }
+        });
+        ibCompartirImagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                compartirImagen();
+            }
+        });
+        ibEnviarMail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enviarMail();
+            }
+        });
+        ibAbrirApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirApp();
+            }
+        });
     }
 
     public void abrirActivity() {
-
+        intent = new Intent(
+                getApplicationContext(),
+                SegundaActivity.class);
+        startActivity(intent);
     }
 
     public void enviarDatos() {
-
+        intent = new Intent(
+                getApplicationContext(),
+                SegundaActivity.class
+        );
+        intent.putExtra("dato1", "Gustavo");
+        intent.putExtra("dato2", "Lizarraga");
+        startActivity(intent);
     }
 
     public void devolverDatos() {
+        intent = new Intent(
+                getApplicationContext(),
+                SegundaActivity.class
+        );
+        intent.putExtra("mensaje", "Hola");
+        startActivityForResult(intent, 2);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 2) {
+            if(resultCode == RESULT_OK) {
+                String resultado = data.getStringExtra("respuesta").toString();
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Respuesta: "+resultado,
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Se cancelo la respuesta.",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void abrirMarcadoTelefonico() {
-
+        intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:77752810"));
+        startActivity(intent);
     }
 
     public void llamar() {
@@ -72,7 +174,9 @@ public class MainActivity extends AppCompatActivity {
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 123);
         } else {
-            //Si el permiso fue aceptado
+            intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:77752810"));
+            startActivity(intent);
         }
     }
 
@@ -92,26 +196,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void abrirGoogleMaps() {
-
+        intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("geo:-16.504014,-68.130906"));
+        startActivity(intent);
     }
 
     public void abrirPaginaWeb() {
-
+        intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://www.gdg.androidbolivia.com"));
+        startActivity(intent);
     }
 
     public void compartirTexto() {
-
+        intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "Hola Study Jam");
+        startActivity(intent);
     }
 
     public void compartirImagen() {
-
+        intent = new Intent(Intent.ACTION_SEND);
+        Uri uri = Uri.parse(
+                "android.resource://com.miramicodigo.sj_a_1_17_java_3_intents/"+R.drawable.googlemaps);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.setType("image/*");
+        startActivity(intent);
     }
 
     public void enviarMail() {
+        String [] TO = {"lizarraga.gux@gmail.com"};
+        String [] CC = {"androidlapaz@gmail.com"};
+        String asunto = "Correo Importante";
+        String contenido = "Este es una prueba de correo";
 
+        intent = new Intent(Intent.ACTION_SEND);
+        intent.setData(Uri.parse("mailto:"));
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL, TO);
+        intent.putExtra(Intent.EXTRA_CC, CC);
+        intent.putExtra(Intent.EXTRA_SUBJECT, asunto);
+        intent.putExtra(Intent.EXTRA_TEXT, contenido);
+
+        startActivity(Intent.createChooser(intent, "Envia Correo"));
     }
 
     public void abrirApp() {
-
+        intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName(
+                "com.miramicodigo.sj_a_1_17_java_2"
+                , "com.miramicodigo.sj_a_1_17_java_2.MainActivity");
+        startActivity(intent);
     }
 }

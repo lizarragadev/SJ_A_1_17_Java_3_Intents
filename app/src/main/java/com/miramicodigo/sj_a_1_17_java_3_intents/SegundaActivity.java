@@ -1,7 +1,9 @@
 package com.miramicodigo.sj_a_1_17_java_3_intents;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +29,31 @@ public class SegundaActivity extends AppCompatActivity {
         etCajaTexto = (EditText) findViewById(R.id.etCajaTexto);
         btnRespuesta = (Button) findViewById(R.id.btnRespuesta);
 
+        Bundle bundle = getIntent().getExtras();
+        try {
+            tvTexto1.setText(bundle.getString("dato1", "").toString());
+            tvTexto2.setText(bundle.getString("dato2", "").toString());
+        } catch (Exception w) {
+
+        }
+
+        try {
+            etCajaTexto.setText(bundle.getString("mensaje", "").toString());
+        } catch (Exception e) {
+
+        }
+
+        btnRespuesta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra(
+                        "respuesta",
+                        etCajaTexto.getText().toString());
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
 }
